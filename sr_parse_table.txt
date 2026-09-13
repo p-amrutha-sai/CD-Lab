@@ -1,0 +1,56 @@
+Stack                                                       | Input                                                      | Action                                                     
+------------------------------------------------------------|------------------------------------------------------------|------------------------------------------------------------
+$                                                           | int                                                        | Shift	 int                                                  
+$ Type                                                      | int                                                        | Reduce	 Type           -> int
+$ Type                                                      | int a                                                      | Shift	 a                                                    
+$ Type a                                                    | int a ;                                                    | Shift	 ;                                                    
+$ Declaration                                               | int a ;                                                    | Reduce	 Declaration    -> Type ID ;
+$ Statement                                                 | int a ;                                                    | Reduce	 Statement      -> Declaration
+$ StatementList                                             | int a ;                                                    | Reduce	 StatementList  -> Statement
+$ StatementList                                             | int a ; a                                                  | Shift	 a                                                    
+$ StatementList a                                           | int a ; a =                                                | Shift	 =                                                    
+$ StatementList a =                                         | int a ; a = 10                                             | Shift	 10                                                   
+$ StatementList a = E                                       | int a ; a = 10                                             | Reduce	 Factor         -> NUMBER
+$ StatementList a = E                                       | int a ; a = 10                                             | Reduce	 Term           -> F
+$ StatementList a = E                                       | int a ; a = 10 ;                                           | Shift	 ;                                                    
+$ StatementList a = E E                                     | int a ; a = 10 ;                                           | Reduce	 Expression     -> T
+$ StatementList Assignment                                  | int a ; a = 10 ;                                           | Reduce	 Assignment     -> ID = E ;
+$ StatementList Statement                                   | int a ; a = 10 ;                                           | Reduce	 Statement      -> Assignment
+$ StatementList                                             | int a ; a = 10 ;                                           | Reduce	 StatementList  -> StatementList Statement
+$ StatementList                                             | int a ; a = 10 ; while                                     | Shift	 while                                                
+$ StatementList while                                       | int a ; a = 10 ; while (                                   | Shift	 (                                                    
+$ StatementList while (                                     | int a ; a = 10 ; while ( a                                 | Shift	 a                                                    
+$ StatementList while ( E                                   | int a ; a = 10 ; while ( a                                 | Reduce	 Factor         -> ID
+$ StatementList while ( E                                   | int a ; a = 10 ; while ( a                                 | Reduce	 Term           -> F
+$ StatementList while ( E                                   | int a ; a = 10 ; while ( a >                               | Shift	 >                                                    
+$ StatementList while ( E E                                 | int a ; a = 10 ; while ( a >                               | Reduce	 Expression     -> T
+$ StatementList while ( E E                                 | int a ; a = 10 ; while ( a > 5                             | Shift	 5                                                    
+$ StatementList while ( E E E                               | int a ; a = 10 ; while ( a > 5                             | Reduce	 Factor         -> NUMBER
+$ StatementList while ( E E E                               | int a ; a = 10 ; while ( a > 5                             | Reduce	 Term           -> F
+$ StatementList while ( E E E                               | int a ; a = 10 ; while ( a > 5 )                           | Shift	 )                                                    
+$ StatementList while ( E E E E                             | int a ; a = 10 ; while ( a > 5 )                           | Reduce	 Expression     -> T
+$ StatementList while ( E Condition                         | int a ; a = 10 ; while ( a > 5 )                           | Reduce	 Condition      -> E > E
+$ StatementList while ( E Condition                         | int a ; a = 10 ; while ( a > 5 ) {                         | Shift	 {                                                    
+$ StatementList while ( E Condition {                       | int a ; a = 10 ; while ( a > 5 ) { a                       | Shift	 a                                                    
+$ StatementList while ( E Condition { a                     | int a ; a = 10 ; while ( a > 5 ) { a =                     | Shift	 =                                                    
+$ StatementList while ( E Condition { a =                   | int a ; a = 10 ; while ( a > 5 ) { a = a                   | Shift	 a                                                    
+$ StatementList while ( E Condition { a = E                 | int a ; a = 10 ; while ( a > 5 ) { a = a                   | Reduce	 Factor         -> ID
+$ StatementList while ( E Condition { a = E                 | int a ; a = 10 ; while ( a > 5 ) { a = a                   | Reduce	 Term           -> F
+$ StatementList while ( E Condition { a = E                 | int a ; a = 10 ; while ( a > 5 ) { a = a -                 | Shift	 -                                                    
+$ StatementList while ( E Condition { a = E E               | int a ; a = 10 ; while ( a > 5 ) { a = a -                 | Reduce	 Expression     -> T
+$ StatementList while ( E Condition { a = E E               | int a ; a = 10 ; while ( a > 5 ) { a = a - 1               | Shift	 1                                                    
+$ StatementList while ( E Condition { a = E E E             | int a ; a = 10 ; while ( a > 5 ) { a = a - 1               | Reduce	 Factor         -> NUMBER
+$ StatementList while ( E Condition { a = E E E             | int a ; a = 10 ; while ( a > 5 ) { a = a - 1               | Reduce	 Term           -> F
+$ StatementList while ( E Condition { a = E E E             | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ;             | Shift	 ;                                                    
+$ StatementList while ( E Condition { a = E E               | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ;             | Reduce	 Expression     -> E - T
+$ StatementList while ( E Condition { Assignment            | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ;             | Reduce	 Assignment     -> ID = E ;
+$ StatementList while ( E Condition { Statement             | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ;             | Reduce	 Statement      -> Assignment
+$ StatementList while ( E Condition { StatementList         | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ;             | Reduce	 StatementList  -> Statement
+$ StatementList while ( E Condition { StatementList         | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Shift	 }                                                    
+$ StatementList while ( E Condition WhileStatement          | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 CompStatement  -> { StatementList }
+$ StatementList while ( E Condition Statement               | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 Statement      -> CompoundStatement
+$ StatementList WhileStatement                              | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 WhileStatement -> while ( Condition ) Statement
+$ StatementList Statement                                   | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 Statement      -> WhileStatement
+$ StatementList                                             | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 StatementList  -> StatementList Statement
+$ Program                                                   | int a ; a = 10 ; while ( a > 5 ) { a = a - 1 ; }           | Reduce	 Program        -> StatementList
+$ Program                                                   | $                                                          | Accept                                                     

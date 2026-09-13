@@ -1,0 +1,32 @@
+Type           -> int
+Declaration    -> Type ID ;
+Statement      -> Declaration
+StatementList  -> Statement
+Factor         -> NUMBER
+Term           -> F
+Expression     -> T
+Assignment     -> ID = E ;
+Statement      -> Assignment
+StatementList  -> StatementList Statement
+Factor         -> ID
+Term           -> F
+Expression     -> T
+Factor         -> NUMBER
+Term           -> F
+Expression     -> T
+Condition      -> E > E
+Factor         -> ID
+Term           -> F
+Expression     -> T
+Factor         -> NUMBER
+Term           -> F
+Expression     -> E - T
+Assignment     -> ID = E ;
+Statement      -> Assignment
+StatementList  -> Statement
+CompStatement  -> { StatementList }
+Statement      -> CompoundStatement
+WhileStatement -> while ( Condition ) Statement
+Statement      -> WhileStatement
+StatementList  -> StatementList Statement
+Program        -> StatementList
